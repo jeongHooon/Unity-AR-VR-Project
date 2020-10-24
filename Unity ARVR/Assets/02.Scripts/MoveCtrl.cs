@@ -15,19 +15,28 @@ public class MoveCtrl : MonoBehaviour
     public float speed = 1.0f;
     //회전 속도
     public float damping = 3.0f;
+    public static bool isStopped = false;
 
     //웨이 포인트 배열
     public Transform[] points;
 
     //Transform 컴포넌트 저장 변수
     private Transform tr;
+
+    //CharacterController 컴포넌트 저장 변수
+    private CharacterController cc;
+
+    //MainCamera Transform 컴포넌트 저장 변수
+    private Transform camTr;
+
     //다음 이동해야 할 위치 변수
     private int nextIdx = 1;
 
     void Start()
     {
         tr = GetComponent<Transform>();
-
+        cc = GetComponent<CharacterController>();
+        camTr = Camera.main.GetComponent<Transform>();
         GameObject wayPointGroup = GameObject.Find("WayPointGroup");
 
         if(wayPointGroup != null)
@@ -39,12 +48,14 @@ public class MoveCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isStopped) return;
         switch (moveType)
         {
             case MoveType.WAY_POINT:
                 MoveWayPoint();
                 break;
             case MoveType.LOOK_AT:
+                MoveLookAt(1);
                 break;
             case MoveType.DAYDREAM:
                 break;
@@ -64,4 +75,13 @@ public class MoveCtrl : MonoBehaviour
             nextIdx = (++nextIdx >= points.Length) ? 1 : nextIdx;
         }
     }
+    void MoveLookAt(int facing) 
+    {
+        Vector3 heading = camTr.forward;
+        heading.y = 0.0f;
+
+        Debug.DrawRay(tr.position, heading.normalized * 1.0f, Color.red);
+        cc.SimpleMove(heading * speed * facing);
+    }
+
 }
