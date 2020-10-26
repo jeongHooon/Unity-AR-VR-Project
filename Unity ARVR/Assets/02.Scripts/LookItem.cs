@@ -8,6 +8,12 @@ public class LookItem : MonoBehaviour
     ,IPointerExitHandler
     ,IGvrPointerHoverHandler
 {
+    private Animator anim;
+    private readonly int hashIsOpen = Animator.StringToHash("IsOpen");
+    void Start()
+    {
+        anim = GetComponent<Animator>();
+    }
     public void OnLookItemBox(bool isLookAt)
     {
         //Debug.Log(isLookAt);
@@ -24,5 +30,9 @@ public class LookItem : MonoBehaviour
     public void OnGvrPointerHover(PointerEventData eventData)
     {
         Debug.Log("Reticle on");
+    }
+    public void OnBoxOpen(bool isOpen)
+    {
+        anim.SetBool(hashIsOpen, isOpen);
     }
 }
