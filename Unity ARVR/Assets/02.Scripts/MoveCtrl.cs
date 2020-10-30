@@ -78,8 +78,17 @@ public class MoveCtrl : MonoBehaviour
     void MoveLookAt(int facing) 
     {
         Vector3 heading = camTr.forward;
+        Quaternion buff;
         heading.y = 0.0f;
-
+        //tr.LookAt(camTr.forward);
+        buff = camTr.localRotation;
+        tr.localRotation = buff;
+        //tr.localRotation = new Quaternion(0, tr.localRotation.y, 0, tr.localRotation.w);
+        camTr.localRotation = buff;
+        Quaternion rot = Quaternion.LookRotation(heading);
+        //tr.rotation = Quaternion.Slerp(tr.rotation, rot, Time.deltaTime);
+        //tr.rotation = Quaternion.LookRotation(heading);
+        //tr.rotation = Quaternion.AngleAxis(, new Vector3(0, 1, 0));
         Debug.DrawRay(tr.position, heading.normalized * 1.0f, Color.red);
         cc.SimpleMove(heading * speed * facing);
     }
