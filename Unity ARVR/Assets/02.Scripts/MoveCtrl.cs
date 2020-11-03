@@ -32,13 +32,14 @@ public class MoveCtrl : MonoBehaviour
     //다음 이동해야 할 위치 변수
     private int nextIdx = 1;
 
+    private Transform model;
     void Start()
     {
         tr = GetComponent<Transform>();
         cc = GetComponent<CharacterController>();
         camTr = Camera.main.GetComponent<Transform>();
         GameObject wayPointGroup = GameObject.Find("WayPointGroup");
-
+        model = tr.GetChild(0);
         if(wayPointGroup != null)
         {
             points = wayPointGroup.GetComponentsInChildren<Transform>();
@@ -48,6 +49,8 @@ public class MoveCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        model.transform.localRotation = new Quaternion(0, camTr.localRotation.y * 2, 0, camTr.localRotation.w);
+
         if (isStopped) return;
         switch (moveType)
         {
@@ -60,6 +63,7 @@ public class MoveCtrl : MonoBehaviour
             case MoveType.DAYDREAM:
                 break;
         }
+
     }
     void MoveWayPoint()
     {
@@ -78,17 +82,10 @@ public class MoveCtrl : MonoBehaviour
     void MoveLookAt(int facing) 
     {
         Vector3 heading = camTr.forward;
-        Quaternion buff;
+        
         heading.y = 0.0f;
-        //tr.LookAt(camTr.forward);
-        buff = camTr.localRotation;
-        tr.localRotation = buff;
-        //tr.localRotation = new Quaternion(0, tr.localRotation.y, 0, tr.localRotation.w);
-        camTr.localRotation = buff;
-        Quaternion rot = Quaternion.LookRotation(heading);
-        //tr.rotation = Quaternion.Slerp(tr.rotation, rot, Time.deltaTime);
-        //tr.rotation = Quaternion.LookRotation(heading);
-        //tr.rotation = Quaternion.AngleAxis(, new Vector3(0, 1, 0));
+        
+        
         Debug.DrawRay(tr.position, heading.normalized * 1.0f, Color.red);
         cc.SimpleMove(heading * speed * facing);
     }
